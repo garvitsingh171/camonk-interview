@@ -80,7 +80,6 @@ For the blog content, use plain text — no need to use HTML-formatted text.
 
 > Organize your components in a suitable file structure within the `src/` directory.
 
-
 ### API Endpoints
 
 The JSON Server provides the following endpoints:
@@ -137,5 +136,19 @@ Once you've completed the assignment:
 2. Commit your changes with clear commit messages
 3. Push to your repository
 4. Share the repository link for review in the google form provided
+
+## FAQ
+
+**Do I need to deploy the code?**  
+No. Simply clone the repository, commit and push your changes, and share the repository link via the Google Form.
+
+**Is it mandatory to use TypeScript and TanStack Query?**  
+Yes, using both TypeScript and TanStack Query is compulsory for this assignment.
+
+**Is using JSON Server mandatory, or can I create my own server?**  
+Using JSON Server is mandatory. Please use the provided JSON Server setup rather than creating your own backend.
+
+**Have more questions?**  
+If you have any additional doubts, feel free to reach out at: `developer@camonk.com`.
 
 Good luck! 🚀
