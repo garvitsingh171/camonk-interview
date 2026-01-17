@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { BlogList } from "@/components/BlogList";
@@ -8,6 +8,10 @@ import { CreateBlogForm } from "@/components/CreateBlogForm";
 function App() {
   const [selectedBlogId, setSelectedBlogId] = useState<number | null>(null);
   const [showCreateForm, setShowCreateForm] = useState(false);
+
+  useEffect(() => {
+    document.title = showCreateForm ? "Create Blog | CA Monk" : "CA Monk Blog";
+  }, [showCreateForm]);
 
   return (
     <div className="min-h-screen flex flex-col bg-gray-50">
