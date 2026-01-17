@@ -1,8 +1,13 @@
-// This component is a form to create new blogs
 import { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -11,14 +16,12 @@ import { Badge } from "@/components/ui/badge";
 import { CreateBlogInput } from "@/types/blog";
 
 interface CreateBlogFormProps {
-  onSuccess?: () => void; // Callback when blog is created successfully
+  onSuccess?: () => void;
 }
 
 export function CreateBlogForm({ onSuccess }: CreateBlogFormProps) {
-  // queryClient is used to invalidate cache after creating blog
   const queryClient = useQueryClient();
 
-  // Form state - stores what user types
   const [formData, setFormData] = useState<CreateBlogInput>({
     title: "",
     category: [],
@@ -28,21 +31,17 @@ export function CreateBlogForm({ onSuccess }: CreateBlogFormProps) {
     content: "",
   });
 
-  // For category input
   const [categoryInput, setCategoryInput] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
 
-  // useMutation hook for creating blog
   const mutation = useMutation({
     mutationFn: async (newBlog: CreateBlogInput) => {
-      // POST request to create blog
       const response = await axios.post("http://localhost:3001/blogs", newBlog);
       return response.data;
     },
     onSuccess: () => {
-      // After success, invalidate the blogs query to refetch the list
       queryClient.invalidateQueries({ queryKey: ["blogs"] });
-      
-      // Reset form
+
       setFormData({
         title: "",
         category: [],
@@ -51,23 +50,25 @@ export function CreateBlogForm({ onSuccess }: CreateBlogFormProps) {
         coverImage: "",
         content: "",
       });
-      
-      // Call parent callback if provided
+
+      setSuccessMessage("Blog created successfully!");
+      setTimeout(() => setSuccessMessage(""), 3000);
+
       onSuccess?.();
-      
-      alert("Blog created successfully!");
     },
     onError: (error) => {
       console.error("Error creating blog:", error);
-      alert("Failed to create blog. Please try again.");
+      alert(
+        `Failed to create blog: ${
+          error instanceof Error ? error.message : "Unknown error"
+        }`
+      );
     },
   });
 
-  // Handle form submission
   const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault(); // Prevent page reload
-    
-    // Validation
+    e.preventDefault();
+
     if (!formData.title.trim()) {
       alert("Please enter a title");
       return;
@@ -85,11 +86,9 @@ export function CreateBlogForm({ onSuccess }: CreateBlogFormProps) {
       return;
     }
 
-    // Submit the form
     mutation.mutate(formData);
   };
 
-  // Add category from input
   const handleAddCategory = () => {
     const trimmed = categoryInput.trim().toUpperCase();
     if (trimmed && !formData.category.includes(trimmed)) {
@@ -101,7 +100,6 @@ export function CreateBlogForm({ onSuccess }: CreateBlogFormProps) {
     }
   };
 
-  // Remove category
   const handleRemoveCategory = (cat: string) => {
     setFormData({
       ...formData,
@@ -109,7 +107,6 @@ export function CreateBlogForm({ onSuccess }: CreateBlogFormProps) {
     });
   };
 
-  // Handle Enter key in category input
   const handleCategoryKeyPress = (e: React.KeyboardEvent) => {
     if (e.key === "Enter") {
       e.preventDefault();
@@ -126,8 +123,13 @@ export function CreateBlogForm({ onSuccess }: CreateBlogFormProps) {
         </CardDescription>
       </CardHeader>
       <CardContent>
+        {successMessage && (
+          <div className="mb-4 p-3 bg-green-50 border border-green-200 rounded-lg text-green-700 text-sm">
+            {successMessage}
+          </div>
+        )}
+
         <form onSubmit={handleSubmit} className="space-y-6">
-          {/* Title Input */}
           <div className="space-y-2">
             <Label htmlFor="title">Title *</Label>
             <Input
@@ -141,7 +143,6 @@ export function CreateBlogForm({ onSuccess }: CreateBlogFormProps) {
             />
           </div>
 
-          {/* Category Input */}
           <div className="space-y-2">
             <Label htmlFor="category">Categories *</Label>
             <div className="flex gap-2">
@@ -160,7 +161,6 @@ export function CreateBlogForm({ onSuccess }: CreateBlogFormProps) {
                 Add
               </Button>
             </div>
-            {/* Display added categories */}
             <div className="flex flex-wrap gap-2 mt-2">
               {formData.category.map((cat) => (
                 <Badge
@@ -180,7 +180,6 @@ export function CreateBlogForm({ onSuccess }: CreateBlogFormProps) {
             )}
           </div>
 
-          {/* Description Input */}
           <div className="space-y-2">
             <Label htmlFor="description">Description *</Label>
             <Textarea
@@ -195,7 +194,6 @@ export function CreateBlogForm({ onSuccess }: CreateBlogFormProps) {
             />
           </div>
 
-          {/* Cover Image URL Input */}
           <div className="space-y-2">
             <Label htmlFor="coverImage">Cover Image URL</Label>
             <Input
@@ -212,7 +210,6 @@ export function CreateBlogForm({ onSuccess }: CreateBlogFormProps) {
             </p>
           </div>
 
-          {/* Content Input */}
           <div className="space-y-2">
             <Label htmlFor="content">Content *</Label>
             <Textarea
@@ -227,7 +224,6 @@ export function CreateBlogForm({ onSuccess }: CreateBlogFormProps) {
             />
           </div>
 
-          {/* Submit Button */}
           <Button
             type="submit"
             className="w-full"
