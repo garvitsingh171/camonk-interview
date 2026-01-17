@@ -1,39 +1,27 @@
 import { useState } from "react";
+import { Navbar } from "@/components/Navbar";
+import { Footer } from "@/components/Footer";
 import { BlogList } from "@/components/BlogList";
 import { BlogDetail } from "@/components/BlogDetail";
 import { CreateBlogForm } from "@/components/CreateBlogForm";
-import { Button } from "@/components/ui/button";
 
 function App() {
   const [selectedBlogId, setSelectedBlogId] = useState<number | null>(null);
   const [showCreateForm, setShowCreateForm] = useState(false);
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <header className="bg-white border-b sticky top-0 z-10">
-        <div className="container mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-3xl font-bold">CA Monk Blog</h1>
-              <p className="text-muted-foreground">
-                Stay updated with the latest trends in finance, accounting, and
-                career growth
-              </p>
-            </div>
-            <Button
-              onClick={() => {
-                setShowCreateForm(!showCreateForm);
-                setSelectedBlogId(null);
-              }}
-              variant={showCreateForm ? "outline" : "default"}
-            >
-              {showCreateForm ? "View Blogs" : "Create New Blog"}
-            </Button>
-          </div>
-        </div>
-      </header>
+    <div className="min-h-screen flex flex-col bg-gray-50">
+      {/* Navbar */}
+      <Navbar
+        onCreateClick={() => {
+          setShowCreateForm(!showCreateForm);
+          setSelectedBlogId(null);
+        }}
+        showCreateForm={showCreateForm}
+      />
 
-      <main className="container mx-auto px-4 py-8">
+      {/* Main Content */}
+      <main className="flex-1 container mx-auto px-4 py-8">
         {showCreateForm ? (
           <div className="max-w-2xl mx-auto">
             <CreateBlogForm
@@ -71,6 +59,9 @@ function App() {
           </div>
         )}
       </main>
+
+      {/* Footer */}
+      <Footer />
     </div>
   );
 }
